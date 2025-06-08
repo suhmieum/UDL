@@ -1090,10 +1090,10 @@ javascript:(function(){
         <div id="tab-contrast-content" class="tab-content active">
           <div class="loading">검사 중...</div>
         </div>
-        <div id="tab-colorblind-content" class="tab-content">
+        <div id="tab-colorblind-content" class="tab-content" style="display: none;">
           <div class="loading">색맹 시뮬레이션 도구 로딩 중...</div>
         </div>
-        <div id="tab-chat-content" class="tab-content">
+        <div id="tab-chat-content" class="tab-content" style="display: none;">
           <div class="chat-header">
             <h3>UDL 및 웹 접근성 문의</h3>
             <button id="reset-chat-btn" class="chat-action-btn">
@@ -1142,138 +1142,22 @@ javascript:(function(){
       button.addEventListener('click', () => {
         const tabId = button.id.replace('tab-', '');
         activateTab(tabId);
-        
-        // 탭별 초기화
-        if (tabId === 'contrast' && !document.getElementById('tab-contrast-content').innerHTML.includes('contrast-summary')) {
-          checkColorContrast();
-        }
-        if (tabId === 'colorblind' && !document.getElementById('tab-colorblind-content').innerHTML.includes('colorblind-tester')) {
-          initColorBlindTester();
-        }
-        if (tabId === 'chat') {
-          initChat();
-        }
       });
     });
   
-    // 초기 탭 활성화
-    activateTab('contrast');
+    // 초기 탭 활성화 및 컨텐츠 로드
+    checkColorContrast();
   
-    // 드래그 핸들
-    (function(){
-      const header = panel.querySelector('.panel-header');
-      let isDragging = false;
-      let currentX;
-      let currentY;
-      let initialX;
-      let initialY;
-      let xOffset = 50;  // 초기 위치
-      let yOffset = 50;  // 초기 위치
-      
-      // 초기 위치 설정
-      panel.style.position = 'fixed';
-      panel.style.left = '50px';
-      panel.style.top = '50px';
-      
-      function setTranslate(xPos, yPos) {
-        // 화면 경계 체크
-        const panelWidth = panel.offsetWidth;
-        const panelHeight = panel.offsetHeight;
-        const headerHeight = header.offsetHeight;
-        
-        // x축 제한
-        if (xPos < 0) xPos = 0;
-        if (xPos > window.innerWidth - panelWidth) {
-          xPos = window.innerWidth - panelWidth;
-        }
-        
-        // y축 제한 (헤더는 항상 화면 내에 유지)
-        if (yPos < 0) yPos = 0;
-        if (yPos > window.innerHeight - headerHeight) {
-          yPos = window.innerHeight - headerHeight;
-        }
-        
-        xOffset = xPos;
-        yOffset = yPos;
-        panel.style.left = xPos + 'px';
-        panel.style.top = yPos + 'px';
-      }
-      
-      function dragStart(e) {
-        if (e.target.closest('.panel-btn')) return;
-        
-        initialX = e.clientX - xOffset;
-        initialY = e.clientY - yOffset;
-        
-        if (e.target === header || e.target.closest('.panel-header')) {
-          isDragging = true;
-        }
-        
-        e.preventDefault();
-      }
-      
-      function dragEnd() {
-        initialX = currentX;
-        initialY = currentY;
-        isDragging = false;
-      }
-      
-      function drag(e) {
-        if (isDragging) {
-          e.preventDefault();
-          
-          currentX = e.clientX - initialX;
-          currentY = e.clientY - initialY;
-          
-          setTranslate(currentX, currentY);
-        }
-      }
-      
-      // 이벤트 리스너
-      header.addEventListener('mousedown', dragStart);
-      document.addEventListener('mousemove', drag);
-      document.addEventListener('mouseup', dragEnd);
-      
-      // 창 크기 변경 시 패널 위치 조정
-      window.addEventListener('resize', () => {
-        setTranslate(xOffset, yOffset);
-      });
-    })();
-  
-    // 최소화 / 닫기 기능
-    let minimized = false;
-    document.getElementById('minimize-panel').onclick = () => {
-      minimized = !minimized;
-      const contents = panel.querySelectorAll('.tab-content, .panel-tabs, .panel-footer');
-      contents.forEach(el => el.style.display = minimized ? 'none' : '');
-      if (minimized) {
-        panel.style.height = 'auto';
-        panel.style.resize = 'none';
-      } else {
-        panel.style.height = 'calc(90vh)';
-        panel.style.resize = 'both';
-      }
-      document.getElementById('minimize-panel').innerHTML = minimized ? 
-        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 13 12 18 17 13"></polyline><polyline points="7 6 12 11 17 6"></polyline></svg>' : 
-        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>';
-      document.getElementById('minimize-panel').title = minimized ? '확장' : '최소화';
-    };
-    
-    document.getElementById('close-panel').onclick = () => {
-      panel.remove();
-      removeHighlights();
-    };
-  
-    // 탭 전환
+    // 탭 전환 함수
     function activateTab(tabId) {
       // 모든 탭 컨텐츠를 숨김
       const tabContents = document.querySelectorAll('.tab-content');
       tabContents.forEach(content => {
-        content.classList.remove('active');
+        content.style.display = 'none';
       });
 
       // 모든 탭 버튼의 활성 상태 제거
-      const tabButtons = document.querySelectorAll('.tab-buttons button');
+      const tabButtons = document.querySelectorAll('.tab-btn');
       tabButtons.forEach(button => {
         button.classList.remove('active');
       });
@@ -1283,8 +1167,17 @@ javascript:(function(){
       const selectedButton = document.getElementById(`tab-${tabId}`);
       
       if (selectedTab && selectedButton) {
-        selectedTab.classList.add('active');
+        selectedTab.style.display = 'block';
         selectedButton.classList.add('active');
+        
+        // 탭별 초기화
+        if (tabId === 'contrast' && !selectedTab.innerHTML.includes('contrast-summary')) {
+          checkColorContrast();
+        } else if (tabId === 'colorblind' && !selectedTab.innerHTML.includes('colorblind-tester')) {
+          initColorBlindTester();
+        } else if (tabId === 'chat') {
+          initChat();
+        }
       }
     }
     
