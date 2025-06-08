@@ -1067,12 +1067,24 @@ javascript:(function(){
     panel.innerHTML = `
       <div class="panel-header">
         <h2 class="panel-title">접근성/UDL 검사 Tool</h2>
-        <div class="tab-buttons">
-          <button id="tab-contrast" class="active">색상 대비</button>
-          <button id="tab-colorblind">색맹 시뮬레이션</button>
-          <button id="tab-chat">AI 채팅</button>
+        <div class="panel-controls">
+          <button id="minimize-panel" class="panel-btn" title="최소화">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+          <button id="close-panel" class="panel-btn" title="닫기">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </div>
-        <button class="close-btn">×</button>
+      </div>
+      <div class="panel-tabs">
+        <button id="tab-contrast" class="tab-btn active">색상 대비</button>
+        <button id="tab-colorblind" class="tab-btn">색맹 시뮬레이션</button>
+        <button id="tab-chat" class="tab-btn">AI 채팅</button>
       </div>
       <div class="panel-content">
         <div id="tab-contrast-content" class="tab-content active">
@@ -1086,8 +1098,6 @@ javascript:(function(){
             <h3>UDL 및 웹 접근성 문의</h3>
             <button id="reset-chat-btn" class="chat-action-btn">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="1 4 1 10 7 10"></polyline>
-                <polyline points="23 20 23 14 17 14"></polyline>
                 <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
               </svg>
               새 대화 시작
@@ -1102,7 +1112,6 @@ javascript:(function(){
       </div>
       <div class="panel-footer">
         <div class="left-buttons">
-          <!-- 채팅 관련 버튼은 여기에 동적으로 추가됩니다 -->
           <button id="download-chat-btn" class="button secondary-btn chat-control-btn" style="display:none;">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -1126,6 +1135,29 @@ javascript:(function(){
       </div>
     `;
     document.body.appendChild(panel);
+  
+    // 탭 전환 이벤트 등록
+    const tabButtons = panel.querySelectorAll('.panel-tabs .tab-btn');
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const tabId = button.id.replace('tab-', '');
+        activateTab(tabId);
+        
+        // 탭별 초기화
+        if (tabId === 'contrast' && !document.getElementById('tab-contrast-content').innerHTML.includes('contrast-summary')) {
+          checkColorContrast();
+        }
+        if (tabId === 'colorblind' && !document.getElementById('tab-colorblind-content').innerHTML.includes('colorblind-tester')) {
+          initColorBlindTester();
+        }
+        if (tabId === 'chat') {
+          initChat();
+        }
+      });
+    });
+  
+    // 초기 탭 활성화
+    activateTab('contrast');
   
     // 드래그 핸들
     (function(){
