@@ -1066,56 +1066,38 @@ javascript:(function(){
     `;
     panel.innerHTML = `
       <div class="panel-header">
-        <h2 class="panel-title">접근성 검사</h2>
-        <div class="panel-controls">
-          <button class="panel-btn" id="minimize-panel" title="최소화">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-          </button>
-          <button class="panel-btn" id="close-panel" title="닫기">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
+        <h2 class="panel-title">접근성/UDL 검사 Tool</h2>
+        <div class="tab-buttons">
+          <button id="tab-contrast" class="active">색상 대비</button>
+          <button id="tab-colorblind">색맹 시뮬레이션</button>
+          <button id="tab-chat">AI 채팅</button>
         </div>
+        <button class="close-btn">×</button>
       </div>
-      <div class="panel-tabs">
-        <button id="tab-contrast" class="tab-active">명도 대비</button>
-        <button id="tab-wcag">웹 접근성 항목</button>
-        <button id="tab-udl">AI 제안</button>
-        <button id="tab-colorblind">색맹 시뮬레이션</button>
-        <button id="tab-chat">AI 챗봇</button>
-      </div>
-      <div id="tab-content-contrast" class="tab-content">
-        <div class="loading">검사 중...</div>
-      </div>
-      <div id="tab-content-wcag" class="tab-content" style="display:none;">
-        <div class="loading">검사 중...</div>
-      </div>
-      <div id="tab-content-udl" class="tab-content" style="display:none;">
-        <div class="loading">분석 중...</div>
-      </div>
-      <div id="tab-content-colorblind" class="tab-content" style="display:none;">
-        <div class="loading">색맹 시뮬레이션 도구 로딩 중...</div>
-      </div>
-      <div id="tab-content-chat" class="tab-content" style="display:none;">
-        <div class="chat-header">
-          <h3>UDL 및 웹 접근성 문의</h3>
-          <button id="reset-chat-btn" class="chat-action-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="1 4 1 10 7 10"></polyline>
-              <polyline points="23 20 23 14 17 14"></polyline>
-              <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
-            </svg>
-            새 대화 시작
-          </button>
+      <div class="panel-content">
+        <div id="tab-contrast-content" class="tab-content active">
+          <div class="loading">검사 중...</div>
         </div>
-        <div class="chat-messages"></div>
-        <div class="chat-input">
-          <input type="text" id="chat-input-field" placeholder="웹 접근성에 대해 물어보세요" />
-          <button id="chat-send-btn">전송</button>
+        <div id="tab-colorblind-content" class="tab-content">
+          <div class="loading">색맹 시뮬레이션 도구 로딩 중...</div>
+        </div>
+        <div id="tab-chat-content" class="tab-content">
+          <div class="chat-header">
+            <h3>UDL 및 웹 접근성 문의</h3>
+            <button id="reset-chat-btn" class="chat-action-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="1 4 1 10 7 10"></polyline>
+                <polyline points="23 20 23 14 17 14"></polyline>
+                <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
+              </svg>
+              새 대화 시작
+            </button>
+          </div>
+          <div class="chat-messages"></div>
+          <div class="chat-input">
+            <input type="text" id="chat-input-field" placeholder="웹 접근성에 대해 물어보세요" />
+            <button id="chat-send-btn">전송</button>
+          </div>
         </div>
       </div>
       <div class="panel-footer">
@@ -1129,14 +1111,7 @@ javascript:(function(){
             </svg>
             대화 내용 다운로드
           </button>
-          <button id="download-results" class="button secondary-btn contrast-only-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            보고서 다운로드
-          </button>
+          <span style="font-size: 12px; color: #666;">© 스마트러닝연구소 All Rights Reserved.</span>
         </div>
         <div class="right-buttons">
           <button class="button primary-btn" id="run-full-scan">
@@ -1259,51 +1234,25 @@ javascript:(function(){
   
     // 탭 전환
     function activateTab(tabId) {
-      // 모든 탭 컨텐츠 숨기기
-      document.querySelectorAll('.tab-content').forEach(content => {
-        content.style.display = 'none';
+      // 모든 탭 컨텐츠를 숨김
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabContents.forEach(content => {
+        content.classList.remove('active');
       });
-      
-      // 모든 탭 비활성화
-      document.querySelectorAll('.panel-tabs button').forEach(tab => {
-        tab.classList.remove('tab-active');
+
+      // 모든 탭 버튼의 활성 상태 제거
+      const tabButtons = document.querySelectorAll('.tab-buttons button');
+      tabButtons.forEach(button => {
+        button.classList.remove('active');
       });
+
+      // 선택된 탭 활성화
+      const selectedTab = document.getElementById(`tab-${tabId}-content`);
+      const selectedButton = document.getElementById(`tab-${tabId}`);
       
-      // 선택한 탭 활성화
-      document.getElementById('tab-' + tabId).classList.add('tab-active');
-      document.getElementById('tab-content-' + tabId).style.display = 'block';
-      
-      // 탭 내용 로드
-      if (tabId === 'contrast' && !document.getElementById('tab-content-contrast').innerHTML.includes('contrast-summary')) {
-        checkColorContrast();
-      }
-      if (tabId === 'wcag' && !document.getElementById('tab-content-wcag').innerHTML.includes('category-header')) {
-        analyzeWCAG();
-      }
-      if (tabId === 'udl' && !document.getElementById('tab-content-udl').innerHTML.includes('udl-category')) {
-        analyzeForUDL();
-      }
-      if (tabId === 'colorblind' && !document.getElementById('tab-content-colorblind').innerHTML.includes('colorblind-tester')) {
-        checkColorBlindness();
-      }
-      if (tabId === 'chat') {
-        initChat();
-      }
-      
-      // 모든 특수 버튼 숨기기
-      document.querySelectorAll('.contrast-only-btn, .chat-control-btn').forEach(btn => {
-        btn.style.display = 'none';
-      });
-      
-      // 현재 탭에 따라 필요한 버튼만 표시
-      if (tabId === 'contrast') {
-        document.querySelectorAll('.contrast-only-btn').forEach(btn => {
-          btn.style.display = 'inline-flex';
-        });
-      } else if (tabId === 'chat') {
-        document.querySelectorAll('.chat-control-btn').forEach(btn => {
-          btn.style.display = 'inline-flex';
-        });
+      if (selectedTab && selectedButton) {
+        selectedTab.classList.add('active');
+        selectedButton.classList.add('active');
       }
     }
     
@@ -4385,6 +4334,80 @@ CP님, API 서비스에 일시적인 문제가 발생했습니다.
     }
 
     function initColorBlindTester() {
+      const content = document.getElementById('tab-colorblind-content');
+      content.innerHTML = `
+        <div class="colorblind-tester">
+          <!-- 1. 색맹 유형 - 강도 선택 -->
+          <div class="control-section">
+            <h3>색맹 유형 및 강도 설정</h3>
+            <div class="controls">
+              <select id="colorblind-type">
+                <option value="protanopia">제1색맹 (적색맹)</option>
+                <option value="deuteranopia">제2색맹 (녹색맹)</option>
+                <option value="tritanopia">제3색맹 (청색맹)</option>
+              </select>
+              <select id="colorblind-strength">
+                <option value="0.3">약도 (30%)</option>
+                <option value="0.6">중도 (60%)</option>
+                <option value="0.9">강도 (90%)</option>
+                <option value="1.0">완전 (100%)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 2. 현재 페이지 색맹 시뮬레이션 -->
+          <div class="simulation-section">
+            <h3>현재 페이지 색맹 시뮬레이션</h3>
+            <div class="page-simulation">
+              <canvas id="page-canvas"></canvas>
+              <button id="simulate-page" class="button primary-btn">
+                현재 페이지 시뮬레이션
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. 이미지 색맹 시뮬레이션 -->
+          <div class="image-upload-section">
+            <h3>이미지 색맹 시뮬레이션</h3>
+            <div class="image-upload">
+              <input type="file" id="image-upload" accept="image/*" />
+              <canvas id="image-canvas"></canvas>
+            </div>
+          </div>
+
+          <!-- 4. 원본 색상 샘플 및 시뮬레이션 결과 -->
+          <div class="color-samples-section">
+            <h3>색상 샘플 시뮬레이션</h3>
+            <div class="color-samples">
+              <div class="sample-row">
+                <div class="color-box original" style="background-color: #FF0000;">
+                  <span>빨강</span>
+                </div>
+                <div class="color-box simulated">
+                  <span>시뮬레이션</span>
+                </div>
+              </div>
+              <div class="sample-row">
+                <div class="color-box original" style="background-color: #00FF00;">
+                  <span>초록</span>
+                </div>
+                <div class="color-box simulated">
+                  <span>시뮬레이션</span>
+                </div>
+              </div>
+              <div class="sample-row">
+                <div class="color-box original" style="background-color: #0000FF;">
+                  <span>파랑</span>
+                </div>
+                <div class="color-box simulated">
+                  <span>시뮬레이션</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
       const typeSelect = document.getElementById('colorblind-type');
       const strengthSlider = document.getElementById('colorblind-strength');
       const strengthValue = document.getElementById('strength-value');
@@ -4803,5 +4826,25 @@ CP님, API 서비스에 일시적인 문제가 발생했습니다.
           aiSettingsContainer.appendChild(geminiOption);
         }
       };
+    });
+
+    // 패널 초기화
+    document.addEventListener('DOMContentLoaded', function() {
+      // 패널 생성
+      const panel = document.createElement('div');
+      panel.id = 'accessibility-panel';
+      panel.className = 'panel';
+      
+      // 초기 탭은 색상 대비로 설정
+      activateTab('contrast');
+      
+      // 색상 대비 검사 시작
+      checkColorContrast();
+      
+      // 색맹 시뮬레이션 초기화
+      initColorBlindTester();
+      
+      // 채팅 초기화
+      initChat();
     });
   })();
